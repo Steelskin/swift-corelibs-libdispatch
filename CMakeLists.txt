@@ -2,12 +2,20 @@ cmake_minimum_required(VERSION 3.26...3.29)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
-if(POLICY CMP0157 AND CMAKE_Swift_COMPILER_USE_OLD_DRIVER)
-  cmake_policy(SET CMP0157 OLD)
+if(POLICY CMP0157)
+  if(CMAKE_Swift_COMPILER_USE_OLD_DRIVER)
+    cmake_policy(SET CMP0157 OLD)
+  else()
+    cmake_policy(SET CMP0157 NEW)
+  endif()
 endif()
 
 if(POLICY CMP0181)
   cmake_policy(SET CMP0181 NEW)
+endif()
+
+if(POLICY CMP0195)
+  cmake_policy(SET CMP0195 NEW)
 endif()
 
 project(dispatch

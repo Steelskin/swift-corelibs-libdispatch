@@ -56,12 +56,28 @@ function(install_swift_module target)
 
   set(INSTALL_SWIFT_MODULE_DIR "${CMAKE_INSTALL_LIBDIR}/swift$<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:_static>/${dispatch_PLATFORM}" CACHE PATH "Path where the swift modules will be installed")
 
-  install(
-    FILES $<TARGET_PROPERTY:${target},Swift_MODULE_DIRECTORY>/${module}.swiftdoc
-    DESTINATION ${INSTALL_SWIFT_MODULE_DIR}/${module}.swiftmodule
-    RENAME ${dispatch_MODULE_TRIPLE}.swiftdoc)
-  install(
-    FILES $<TARGET_PROPERTY:${target},Swift_MODULE_DIRECTORY>/${module}.swiftmodule
-    DESTINATION ${INSTALL_SWIFT_MODULE_DIR}/${module}.swiftmodule
-    RENAME ${dispatch_MODULE_TRIPLE}.swiftmodule)
+  set(_cmp0195_status "OLD")
+  if(POLICY CMP0195)
+    cmake_policy(GET CMP0195 _cmp0195_status)
+  endif()
+  if(_cmp0195_status STREQUAL "NEW")
+    # CMake already lays the module down as <module>.swiftmodule/<triple>.*
+    install(
+      FILES $<TARGET_PROPERTY:${target},Swift_MODULE_DIRECTORY>/${module}.swiftmodule/${CMAKE_Swift_MODULE_TRIPLE}.swiftdoc
+      DESTINATION ${INSTALL_SWIFT_MODULE_DIR}/${module}.swiftmodule
+      RENAME ${dispatch_MODULE_TRIPLE}.swiftdoc)
+    install(
+      FILES $<TARGET_PROPERTY:${target},Swift_MODULE_DIRECTORY>/${module}.swiftmodule/${CMAKE_Swift_MODULE_TRIPLE}.swiftmodule
+      DESTINATION ${INSTALL_SWIFT_MODULE_DIR}/${module}.swiftmodule
+      RENAME ${dispatch_MODULE_TRIPLE}.swiftmodule)
+  else()
+    install(
+      FILES $<TARGET_PROPERTY:${target},Swift_MODULE_DIRECTORY>/${module}.swiftdoc
+      DESTINATION ${INSTALL_SWIFT_MODULE_DIR}/${module}.swiftmodule
+      RENAME ${dispatch_MODULE_TRIPLE}.swiftdoc)
+    install(
+      FILES $<TARGET_PROPERTY:${target},Swift_MODULE_DIRECTORY>/${module}.swiftmodule
+      DESTINATION ${INSTALL_SWIFT_MODULE_DIR}/${module}.swiftmodule
+      RENAME ${dispatch_MODULE_TRIPLE}.swiftmodule)
+  endif()
 endfunction()
